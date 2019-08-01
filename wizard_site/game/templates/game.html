@@ -1,0 +1,541 @@
+{% extends 'main.html'%}
+{% load staticfiles %}
+{% block head %}
+<style>
+    a {
+        outline: none;
+        color: inherit;
+        text-decoration: none;
+    }
+    .header {
+        position:absolute;
+        top:0px;
+        left:0px;
+        width: 100%;
+        background-color: transparent;
+        height:50px;
+        margin:0px;
+    }
+    .battleground {
+        margin-left:auto;
+        margin-right: auto;
+        margin-top:calc(50vh - 100px);
+        width:450px;
+        height:250px;
+        background-color: transparent;
+        text-align: center;
+        font-family: Arial;
+    }
+    .left_player {
+        position:absolute;
+        left:0px;
+        top: 50px;
+        width:150px;
+        height:calc(100vh - 50px);
+        background-color: transparent;
+    }
+    .right_player {
+        position: absolute;
+        right:0px;
+        top:50px;
+        width:150px;
+        height:calc(100vh - 50px);
+        background-color: transparent;
+    }
+    .top_player {
+        position:absolute;
+        top:50px;
+        left:150px;
+        height:150px;
+        width:calc(100% - 300px);
+        background-color: transparent;
+    }
+    .bottom_player {
+        position:absolute;
+        bottom:0px;
+        left:150px;
+        height:150px;
+        width:calc(100% - 300px);
+        background-color: transparent;
+    }
+    .score_label {
+        font-family: Arial;
+        color:#333;
+        text-align: left;
+        font-size: 10px;
+        letter-spacing: 1px;
+        width:40px;
+        height:30px;
+        margin-top: -30px;
+        margin-left: 43px;
+    }
+    .prediction_label {
+        font-family: Arial;
+        color:#333;
+        text-align: left;
+        font-size: 10px;
+        letter-spacing: 1px;
+        width:50px;
+        height:30px;
+        margin-top: -90px;
+        margin-left: 100px;
+        border-radius: 50%;
+    }
+    .win_label {
+        font-family: Arial;
+        color:#333;
+        text-align: left;
+        font-size: 10px;
+        letter-spacing: 1px;
+        width:50px;
+        height:30px;
+        margin-top: 10px;
+        margin-left: 100px;
+        border-radius: 50%;
+    }
+    .player_cards {
+        position:absolute;
+        display: inline-block;
+        width:calc(100% - 230px);
+        background-color: transparent;
+        height:100px;
+    }
+    .side_cards_left {
+        position:absolute;
+        top: 130px;
+        left: 35px;
+        display: inline-block;
+        width:100px;
+        background-color: transparent;
+        height:calc(100vh - 200px);
+    }
+    .side_cards_right {
+        position:absolute;
+        display: inline-block;
+        bottom: 150px;
+        right: 35px;
+        width:100px;
+        background-color: transparent;
+        height:calc(100vh - 230px);
+    }
+    .card {
+        display: inline-block;
+        {% if round > 10 %}
+        margin:2px;
+        width:40px;
+        {% else %}
+        margin:2px;
+        width:50px;
+        {% endif %}
+        font-family: Arial;
+        color: red;
+        border-radius: 3px;
+        border: 2px solid red;
+        height:50px;
+        text-align: center;
+        padding-top: 30px;
+        background-color: white;
+    }
+    .horizontal_card {
+        display: inline-block;
+        {% if round > 10 %}
+        margin:2px;
+        height:18px;
+        padding-top:4px;
+        {% else %}
+        margin:2px;
+        height:30px;
+        padding-top:10px;
+        {% endif %}
+        font-family: Arial;
+        color: red;
+        border-radius: 3px;
+        border: 2px solid red;
+        width:80px;
+        text-align: center;
+        background-color:white;
+    }
+
+    .prediction_value {
+        display: inline-block;
+        font-family: Arial;
+        font-size: 24px;
+        width: 40px;
+        height: 40px;
+        margin:5px;
+        border-radius: 50%;
+        background-color: orange;
+    }
+
+    .next_button {
+        padding: 8px;
+        border: 1px solid #999;
+        width: 100px;
+        height:30px;
+        font-size: 16px;
+        text-align: center;
+        color: #666;
+        border-radius: 3px;
+    }
+    
+    .Yellow {
+        color: #CCCC00 !important;
+        border: 2px solid #CCCC00 !important;
+    }
+
+    @media only screen and (max-width: 800px)  {
+        .left_player {
+            display: none;
+        }
+        .right_player {
+            display: none;
+        }
+        .bottom_player {
+            left: 0;
+            width: 100%;
+        }
+        .top_player {
+            left: 0;
+            width: 100%;
+        }
+    }
+
+    @media only screen and (max-height: 600px) {
+        .top_player {
+            display: none;
+        }
+        .battleground {
+            margin-top: calc(50vh - 175px);
+        }
+    }
+
+    @media only screen and (max-height: 450px) {
+        .left_player {
+            display: none;
+        }
+        .right_player {
+            display: none;
+        }
+        .header {
+            display: none;
+        }
+        .battleground {
+            margin-top: calc(50vh - 200px);
+        }
+        .bottom_player {
+            width:100%;
+        }
+    }
+
+    @media only screen and (max-height: 370px) {
+        .bottom_player {
+            display: none;
+        }
+        .battleground {
+            margin-top: calc(50vh - 125px);
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div style="height:50px; display: inline-block; width:50px; float:right; margin-right:10px;">
+        <a href="/">
+            <img src="{% static 'img/wizard_hat.svg' %}" style="width:30px; margin:10px;">
+        </a>
+    </div>
+    <div style="height:50px; display: inline-block; width:50px; float:right; margin-right:10px;">
+        <p style="font-family: Arial; margin-right:100px; color:#666">Wizard</p>
+    </div>
+    <div style="width:100px; margin:auto; margin-top:16px; font-family: Arial; color:#666; font-size: 20px; text-align: center;">
+        Round {{round}}
+    </div>
+    {% if prediction_phase == False %}
+        <div style="float:left; color:#666; margin-left:10px; margin-top: -30px; width:120px; font-size: 12px; font-family: Arial; display: inline-block;">
+            Trump Color:
+            <p style="color: {{trump_card.color}}; margin-top:1px; font-size: 20px;">{{trump_card.color}}</p>
+            <!--<div style="width:20px; height:20px; border-radius:50%; float:right; margin-top: -4px; background-color: {{trump_card.color}}; ">-->
+        </div>
+        </div>
+
+    {% endif %}
+</div>
+<div class="battleground">
+    {% if prediction_phase == True %}
+        <p style="font-size: 24px; margin-top: -40px;">Prediction Phase</p>
+        <p>Player {{first_player}} Starts</p>
+        <p>Trump Card:</p>
+        <div style="margin: 10px;">
+            {% if trump_card.color == "White" %}
+            <div class="card" style="color: black; border: 2px solid black;">
+                {{trump_card.value}}
+            </div>
+            {% else %}
+            <div class="card {{card.color}}" style="color: {{trump_card.color}}; border: 2px solid {{trump_card.color}};">
+                {{trump_card.value}}
+            </div>
+            {% endif %}
+        </div>
+        <p>Tricks:</p>
+        <div style="margin:auto; text-align: center;">
+            {% for number in prediction_range %}
+            <div class="prediction_value">
+                <a href="/game/round/{{round}}/prediction/{{number}}/">
+                    <div style="padding-top: 5px;">
+                        {{number}}
+                    </div>
+                </a>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        {% if next %}
+            <p style="font-size: 24px; margin-top: -40px;">Results</p>
+            <p>Player {{winner}} wins</p>
+        {% else %}
+            <p style="font-size: 24px; margin-top: -30px;">Play Phase</p>
+        {% endif %}
+        {% for card in trick_cards %}
+            {% if card.color != "White" %}
+                <div class="card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                    {{card.value}}
+                </div>
+            {% else %}
+                <div class="card" style="color: black; border: 2px solid black;">
+                    {{card.value}}
+                </div>
+            {% endif %}
+        {% endfor %}
+        {% if next == "round" %}
+            <div style="margin-top: 40px;">
+                <a href="/game/round/{{nr}}/" class="next_button">Next Round</a>
+            </div>
+        {% elif next == "trick" %}
+            <div style="margin-top: 40px;">
+                <a href="/game/round/{{round}}/trick/" class="next_button">Next Trick</a>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+<div class="left_player">
+    <div>
+        <p style="margin-left:40px; margin-bottom:-23px; font-family: Arial; color:#333; font-size:10px;">Player 1</p>
+        <img src="{% static 'img/robot.svg' %}" style="width:60px; margin:30px;">
+        <div class="score_label">
+            Score:
+            <div style="font-size: 18px;">
+                {{left_agent.score}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="prediction_label">
+            Prediction:
+            <div style="font-size: 18px;">
+                {% if prediction_phase == True %}
+                    ?
+                {% else %}
+                    {{left_agent.prediction}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="win_label">
+            Wins:
+            <div style="font-size:18px;">
+                {{left_agent.wins}}
+            </div>
+        </div>
+    </div>
+    <div class="side_cards_left">
+        {% for card in left_agent.hand %}
+            {% if card.color != "White" %}
+                {% if blind %}
+                    <div class="horizontal_card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="horizontal_card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if blind %}
+                    <div class="horizontal_card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="horizontal_card" style="color: black; border: 2px solid black;">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="right_player">
+    <div style="position: absolute; bottom: 40px; right:45px;">
+        <p style="margin-left:40px; margin-bottom:-23px; font-family: Arial; color:#333; font-size:10px;">Player 3</p>
+        <img src="{% static 'img/robot.svg' %}" style="width:60px; margin:30px;">
+        <div class="score_label">
+            Score:
+            <div style="font-size: 18px;">
+                {{right_agent.score}}
+            </div>
+        </div>
+    </div>
+    <div style="position: absolute; bottom: 35px; right:15px;">
+        <div class="prediction_label">
+            Prediction:
+            <div style="font-size: 18px;">
+                {% if prediction_phase == True %}
+                    ?
+                {% else %}
+                    {{right_agent.prediction}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="win_label">
+            Wins:
+            <div style="font-size:18px;">
+                {{right_agent.wins}}
+            </div>
+        </div>
+    </div>
+    <div class="side_cards_right" style="height: {{height}}px;">
+        {% for card in right_agent.hand %}
+            {% if card.color != "White" %}
+                {% if blind %}
+                    <div class="horizontal_card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="horizontal_card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                    {{card.value}}
+                </div>
+                {% endif %}
+            {% else %}
+                {% if blind %}
+                    <div class="horizontal_card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="horizontal_card" style="color: black; border: 2px solid black;">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="top_player">
+    <div style="position: absolute; bottom: 40px; right:45px;">
+        <p style="margin-left:40px; margin-bottom:-23px; font-family: Arial; color:#333; font-size:10px;">Player 2</p>
+        <img src="{% static 'img/robot.svg' %}" style="width:60px; margin:30px;">
+        <div class="score_label">
+            Score:
+            <div style="font-size: 18px;">
+                {{top_agent.score}}
+            </div>
+        </div>
+    </div>
+    <div style="position: absolute; bottom: 35px; right:15px;">
+        <div class="prediction_label">
+            Prediction:
+            <div style="font-size: 18px;">
+                {% if prediction_phase == True %}
+                    ?
+                {% else %}
+                    {{top_agent.prediction}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="win_label">
+            Wins:
+            <div style="font-size:18px;">
+                {{top_agent.wins}}
+            </div>
+        </div>
+    </div>
+    <div class="player_cards" style="top: 20px; right: 140px; width:{{width}}px;">
+        {% for card in top_agent.hand %}
+            {% if card.color != "White" %}
+                {% if blind %}
+                    <div class="card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if blind %}
+                    <div class="card" style="background-color: #666; border:none;">
+                    </div>
+                {% else %}
+                    <div class="card {{card.color}}" style="color: black; border: 2px solid black;">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+<div class="bottom_player">
+    <p style="margin-left:40px; margin-bottom:-23px; font-family: Arial; color:#333; font-size:10px;">Player 4</p>
+    <div>
+        <img src="{% static 'img/player_icon.svg' %}" style="width:60px; margin:30px;">
+        <div class="score_label">
+            Score:
+            <div style="font-size: 18px;">
+                {{human_player.score}}
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="prediction_label">
+            Prediction:
+            <div style="font-size: 18px;">
+                {% if prediction_phase == True %}
+                    ?
+                {% else %}
+                    {{human_player.prediction}}
+                {% endif %}
+            </div>
+        </div>
+        <div class="win_label">
+            Wins:
+            <div style="font-size:18px;">
+                {{human_player.wins}}
+            </div>
+        </div>
+    </div>
+    <div class="player_cards" style="bottom: 30px; left: 180px;">
+        {% for card in human_player.hand %}
+            {% if card.color != "White" %}
+                {% if prediction_phase == False %}
+                    <a href="/game/round/{{round}}/trick/{{card.int}}/">
+                        <div class="card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                            {{card.value}}
+                        </div>
+                    </a>
+                {% else %}
+                     <div class="card {{card.color}}" style="color: {{card.color}}; border: 2px solid {{card.color}};">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% else %}
+                {% if prediction_phase == False %}
+                    <a href="/game/round/{{round}}/trick/{{card.int}}/">
+                        <div class="card" style="color: black; border: 2px solid black;">
+                            {{card.value}}
+                        </div>
+                    </a>
+                {% else %}
+                    <div class="card" style="color: black; border: 2px solid black;">
+                        {{card.value}}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

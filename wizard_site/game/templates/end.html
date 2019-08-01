@@ -1,0 +1,87 @@
+{% extends 'main.html'%}
+{% load staticfiles %}
+{% block head %}
+
+<style>
+    .player_tag {
+        text-align: left;
+        font-family: Arial;
+    }
+
+    .attribute_tag {
+        text-align: right;
+    }
+
+    table {
+        border-collapse: collapse;
+        color:#333;
+    }
+
+    td {
+        padding: 10px;
+    }
+
+    .home_button {
+        margin-top: 40px;
+        border: 2px solid #333;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100px;
+        padding: 5px;
+        text-align: center;
+        color:#333;
+        cursor: pointer;
+        font-family: Arial;
+    }
+
+
+</style>
+
+<script>
+    $(document).ready(function() {
+        $('.home_button').click(function() {
+            window.location.href="/"
+        });
+    });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div style="margin-top: 20vh;">
+    <div style="height:200px; display: block; margin:auto; width:300px; margin-bottom:30px;">
+        <img src="{% static 'img/wizard_hat.svg' %}" style="width:100px; margin-left:100px; margin-right:100px;">
+        <p style="text-align: center; font-family: Arial; margin:10px; font-size: 40px; color:#666;">Game Summary</p>
+    </div>
+    <table style="width:300px; margin:auto; text-align: center;">
+        <tr style="border-bottom: 2px solid #333;">
+            <td class="player_tag">Player</td>
+            <td class="attribute_tag">Score</td>
+            <td class="attribute_tag">Accuracy</td>
+        </tr>
+        <tr>
+            <td class="player_tag">Player 1</td>
+            <td class="attribute_tag">{{player_1_score}}</td>
+            <td class="attribute_tag">{{player_1_acc}}%</td>
+        </tr>
+        <tr>
+            <td class="player_tag">Player 2</td>
+            <td class="attribute_tag">{{player_2_score}}</td>
+            <td class="attribute_tag">{{player_2_acc}}%</td>
+        </tr>
+        <tr>
+            <td class="player_tag">Player 3</td>
+            <td class="attribute_tag">{{player_3_score}}</td>
+            <td class="attribute_tag">{{player_3_acc}}%</td>
+        </tr>
+        <tr>
+            <td class="player_tag">Player 4</td>
+            <td class="attribute_tag">{{player_4_score}}</td>
+            <td class="attribute_tag">{{player_4_acc}}%</td>
+        </tr>
+    </table>
+    <div class="home_button">
+        Home
+    </div>
+</div>
+{% endblock %}

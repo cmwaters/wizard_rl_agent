@@ -1,0 +1,6 @@
+archive/
+tests/models/
+tests/logs/
+tests/plotting/plots/
+tests/pools/
+dependencies/
