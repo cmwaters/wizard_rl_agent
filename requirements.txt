@@ -1,7 +1,7 @@
 numpy==1.16.4
 psutil==5.6.3
 tensorboard==1.13.1
-tensorflow==1.13.1
+tensorflow==1.15.2
 tf-agents-nightly==0.2.0.dev20190528
 tf-nightly==1.14.1.dev20190604
 djongo==1.2.32
